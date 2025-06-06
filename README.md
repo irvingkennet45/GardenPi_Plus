@@ -2,7 +2,7 @@
 Developed by [<strong>Kenneth Irving (irvingkennet45)</strong>](https://github.com/irvingkennet45 'My Github Profile')
 
 ## Overview
-The GardenPi allows you to control your garden's irrigation system with simple electronics. It's designed to be "plug-and-play" in a sense, so most processes that would require user configuration are easily accessible in JSON config files, meaning that you only need to define a few terms, such as your WiFi SSID and password, and the system will take care of the rest!
+The GardenPi+ allows you to control your garden's irrigation system with simple electronics. It's designed to be "plug-and-play" in a sense, so most processes that would require user configuration are easily accessible in JSON config files, meaning that you only need to define a few terms, such as your WiFi SSID and password, and the system will take care of the rest!
 ## Use Case
 ## Hardware
 With DIY in mind, using an expensive setup would be ridiculous, as the  point of DIY is that it is supposed to be cheaper to create the item at home. With that in mind, you'd be in luck, because with a system like this, you don't even need the best SBCs to get it up and running!
