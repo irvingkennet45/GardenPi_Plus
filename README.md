@@ -3,11 +3,18 @@ Developed by [<strong>Kenneth Irving (irvingkennet45)</strong>](https://github.c
 
 ## Overview
 The GardenPi+ allows you to control your garden's irrigation system with simple electronics. It's designed to be "plug-and-play" in a sense, so most processes that would require user configuration are easily accessible in JSON config files, meaning that you only need to define a few terms, such as your WiFi SSID and password, and the system will take care of the rest!
+
 ## Use Case
+
+- Monitoring your spinklers' water usage
+- Keeping track of your climates precipitation over time
+- Automated irrigation
+- And much, much more!
+
 ## Hardware
 With DIY in mind, using an expensive setup would be ridiculous, as the  point of DIY is that it is supposed to be cheaper to create the item at home. With that in mind, you'd be in luck, because with a system like this, you don't even need the best SBCs to get it up and running!
 
-#### Required Hardware
+#### Hardware Guide
 These are some of the components that I used when building my system. The majority of them I had lying around. Decide ahead of time whether or not you're willing to solder your leads, or if you will be using GPIO pins and headers. This will choose what component types you'll be buying.:
 - <strong>Raspberry Pi Pico W</strong>
     - <em>Price: $8 </em>
@@ -43,10 +50,10 @@ These are some of the components that I used when building my system. The majori
                      |________|
 
 - <strong>Terminal Block</strong>
-    - <em>Price: $ </em>
+    - <em>Price: $5 </em>
     - Optional, but if it can be bought, you definitely should, as it will be hell cable managing/mounting if you don't. I suggest size of at least 12 ports for future upgrades, but only 5 pairs are officially required, if building a simple system with no extra sensors, and only controlling the solenoid.
 - <strong>Relay Module</strong>
-    - <em>Price: $ </em>
+    - <em>Price: $9 / for 4 </em>
     - Alternatively, rather than working with a MOSFET, you can use a relay module. Most relays are logic-level to begin with, unlike MOSFETs. The downside is that they are mechanical, and will wear over time, and may need to be replaced. They also make a clicking noise when activating/deactivating, which can be annoying if you have to listen to it.
 - <strong>12V Power</strong>
     - <em>Price: $12</em>
@@ -64,32 +71,33 @@ These are some of the components that I used when building my system. The majori
 
 ## Features
 
-- Captive portal for easy managament
+- Web portal for easy managament
 - OTA updates
 - Easy configuration, allowing for plug-n-play
 - Expansion capable, although you may have to program such expansions yourself
 - Cheap compared to other automated systems
 - Extremely customizable
 - Weather-aware, allowing the system to pause or alert you in inclement weather situations
-- Scheduling features within the portal, for easy automation.
+- Scheduling features within the portal, for easy automation
+- Modular, allowing for endless combonations with other sensors and data, limited only by your programming skills
 
 ## Security
 
 - Captive portal authentication
 - Zero-trust logic, only keeping necessary information open without authentication
 - SHA-256 credential hashing, keeping your password, pin, and other such information private
-- LAN-only mode if desired
+- LAN-only mode if desired (comment out applicable sections)
 - MAC auto-authentication, allowing for quick access to the portal by referencing a whitelist of MAC address
 
 ## Customization
 
-With the ability to full modify direct from the source, you can customize the CSS file to suit your needs!
+With the ability to fully modify the portal's styling directly from the source, you can customize your experience as much as you'd like!
 
 ## Expansion
 
-Add your own modules, such as temperature sensors, humidity sensors, soil monitors, and more, and connect them through GPIO for monitoring and oversight over your garden!
+Add your own modules, such as temperature sensors, humidity sensors, soil monitors, and more, and connect them through GPIO pins for logging and oversight over your garden!
 
-> <strong>Note:</strong> <em>This project was NOT originally intended to be a replacement for the original GardenPi or GardenPi powered by Neptune. I honestly had no idea that these were already programs that existed before I started writing this one, and they might have made creating this easier if I had, but to be fair, this was a personal project to practice my skills. None of the code or concepts used in this project are based off of those, and all though they do share some concepts, all of the ideas that I created for mine are fully from my own knowledge and not CTRL+V. After learning of those projects, I've decided to call it GardenPi+.</em>
+> <strong>Note:</strong> <em>This project was NOT originally intended to be a replacement for the original GardenPi or GardenPi powered by Neptune. I honestly had no idea that these were already programs that existed before I started writing this one, and they might have made creating this easier if I had. In all honesty, this was a personal project to practice my skills. None of the code or concepts used in this project are based off of those, and allthough they do share some concepts, all of the ideas that I created for mine are fully from my own knowledge and not just CTRL+V'd. After learning of those projects, I've decided to call it GardenPi+.</em>
 >#### OG GardenPi:
 > [GardenPi (ankitr42/gardenpi)](https://github.com./ankitr42/gardenpi 'GardenPi') <br>
 > [GardenPi powered by Neptune (rjsears/GardenPi)](https://github.com/rjsears/GardenPi 'GardenPi Powered by Neptune')
