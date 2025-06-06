@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GardenPi Portal - Controller</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="../simplelogic.js"></script>
+</head>
+<body>
+
+<!-- NAVIGATION BAR -->
+<nav class="topNavBar">
+  <div class="navGPiContainer">
+    <div class="navLogo">
+      <a href="/overview">
+        <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+      </a>
+    </div>
+    <div class="navGPi">
+      <h1>GardenPi+ Portal</h1>
+    </div>
+  </div>
+  <div class="navMain">
+    <div class="navContainer">
+      <div class="navLinks">
+        <a href="../overview">Overview</a>
+        <a href="../controller">Controller</a>
+        <a href="../data">Data</a>
+        <a href="../weather-data">Weather</a>
+        <a href="../console">Console</a>
+        <a href="../about">About</a>
+      </div>
+      <div class="navRight">
+        <div class="navClock">
+          <p><span id="clockTime">--:--:--</span></p>
+        </div>
+        <div class="navToggle">
+          <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider">
+              <span class="icon sun">☀️</span>
+              <span class="icon moon">🌙</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<h1 class="mainHeader">Garden Pi Control</h1>
+<br>
+
+<h2 class="mainHeroHeader">Misting Controller -</h2>
+<div class="actionsContainer">
+  <label class="switch">
+    <input type="checkbox" id="mistToggle" onclick="alertBox()">
+    <span class="slider">
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </span>
+  </label>
+  <p id="mistEnabledLabel">Toggle Mist</p>
+</div>
+<div class="actionsContainer">
+  <label class="switch">
+    <input type="checkbox" id="autoMistToggle" onclick="alertBox()">
+    <span class="slider">
+      <span class="icon sun"></span>
+      <span class="icon moon"></span>
+    </span>
+  </label>
+  <p id="autoMistingEnabledLabel">Automated Misting</p>
+</div>
+<br>
+
+<!-- SCHEDULING UI -->
+<h2 class="mainHeroHeader">Mist Scheduling -</h2>
+<br>
+<form id="scheduleForm">
+<div class="scheduleRow" id="sun-row">
+  <label for="sun-check" class="schedulingLabel">Sunday</label>
+  <input type="checkbox" id="sun-check" onchange="toggleDay('sun')">
+  <div class="timeSelectors" id="sun-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="sun"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="sun"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="sun"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="sun"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+<div class="scheduleRow" id="mon-row">
+  <label for="mon-check" class="schedulingLabel">Monday</label>
+  <input type="checkbox" id="mon-check" onchange="toggleDay('mon')">
+  <div class="timeSelectors" id="mon-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="mon"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="mon"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="mon"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="mon"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+<div class="scheduleRow" id="tue-row">
+  <label for="tue-check" class="schedulingLabel">Tuesday</label>
+  <input type="checkbox" id="tue-check" onchange="toggleDay('tue')">
+  <div class="timeSelectors" id="tue-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="tue"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="tue"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="tue"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="tue"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+<div class="scheduleRow" id="wed-row">
+  <label for="wed-check" class="schedulingLabel">Wednsday</label>
+  <input type="checkbox" id="wed-check" onchange="toggleDay('wed')">
+  <div class="timeSelectors" id="wed-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="wed"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="wed"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="wed"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="wed"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+<div class="scheduleRow" id="thu-row">
+  <label for="thu-check" class="schedulingLabel">Thursday</label>
+  <input type="checkbox" id="thu-check" onchange="toggleDay('thu')">
+  <div class="timeSelectors" id="thu-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="thu"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="thu"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="thu"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="thu"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+<div class="scheduleRow" id="fri-row">
+  <label for="fri-check" class="schedulingLabel">Friday</label>
+  <input type="checkbox" id="fri-check" onchange="toggleDay('fri')">
+  <div class="timeSelectors" id="fri-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="fri"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="fri"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="fri"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="fri"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+<div class="scheduleRow" id="sat-row">
+  <label for="sat-check" class="schedulingLabel">Saturday</label>
+  <input type="checkbox" id="sat-check" onchange="toggleDay('sat')">
+  <div class="timeSelectors" id="sat-times">
+    <div class="timeSlot"><select class="timeDropdown" data-day="sat"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="sat"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="sat"></select><select class="ampmDropdown"></select></div>
+    <div class="timeSlot"><select class="timeDropdown" data-day="sat"></select><select class="ampmDropdown"></select></div>
+  </div>
+</div>
+
+  <button type="submit" id="saveScheduleBtn">Save Schedule</button>
+</form>
+
+</body>
+</html>
+
+<!--Ready for use. Controls scheduling and toggling of automation via the web portal.-->

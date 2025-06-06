@@ -1,0 +1,12 @@
+{
+    "architecture": "ARM",
+    "processor": "RP2040",
+    "ram_type": "SRAM",
+    "ram": "256KB",
+    "os": "MicroPython",
+    "model": "Raspberry Pi Pico Wireless",
+    "manufacturer": "Raspberry Pi",
+    "serial": 1000000000,
+    "install_date": "06/05/2025",
+    "last_runtime": "2120"
+}

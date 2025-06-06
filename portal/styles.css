@@ -1,0 +1,659 @@
+/* ==================================================
+  GardenPi+ Web Portal Stylesheet
+  Do not alter unless you know what you're doing.
+  Alterations may cause unintended bugs or display issues.
+================================================== */
+
+/* ==================================================
+  Global Styling
+================================================== */
+
+/*  Navigation Bar */
+nav.topNavBar {
+  position: fixed;
+  top: -40px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background-color: var(--top-nav-bg);
+  border-bottom-left-radius: 21px;
+  border-bottom-right-radius: 21px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 0 20px 12px 40px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.navGPiContainer {
+  display: flex;
+  justify-content: middle;
+  align-items: flex-end;
+  margin-right: 55px;
+  margin-left: -30px;
+}
+.logoIcon {
+  height: 56px; /* adjust as needed */
+  width: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.navGPi {
+  margin-bottom: -18px;
+  font-size: 20px;
+  text-wrap: nowrap;
+  color: var(--nav-link-text);
+}
+
+.navMain {
+  width: 100%;
+  max-width: 1280px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navLinks {
+  display: flex;
+  gap: 40px;
+}
+
+.navLinks a {
+  background: var(--nav-link-bg);
+  color: var(--nav-link-text);
+  padding: 15px 25px;
+  border-radius: 21px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: background 0.6s ease-in-out, color 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navLinks a:hover {
+  background: var(--nav-link-bg-hover);
+  color: var(--nav-link-text-hover);
+  box-shadow: inset 0px -2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navClock p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600px;
+  padding: 8px;
+  color: var(--nav-link-text);
+  background-color: var(--nav-link-bg);
+  border-radius: 21px;
+  transition: background 0.4s, color 0.4s;
+}
+
+.navToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  background-color: var(--nav-link-bg);
+  border-radius: 999px;
+  transition: background-color 0.3s ease;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  font-size: 14px;
+  color: rgb(255, 255, 255);
+  pointer-events: none;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--nav-link-text-hover);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(30px);
+}
+
+.slider .icon {
+  z-index: 1;
+  opacity: 0.5;
+  transition: opacity 0.1s ease;
+}
+
+.switch input:checked + .slider .sun {
+  opacity: 0;
+  margin-top: 4.75px;
+}
+
+.switch input:checked + .slider .moon {
+  opacity: 1;
+  margin-top: 4px;
+  margin-right: 10px;
+}
+
+.switch input:not(:checked) + .slider .sun {
+  opacity: 1;
+  margin-top: 4.75px;
+}
+
+.switch input:not(:checked) + .slider .moon {
+  opacity: 0;
+  margin-top: 4px;
+  margin-right: 10px;
+}
+
+
+/* Page */
+/* Default Themeing */
+:root {
+  --bg-color: #d6faea;
+  --text-color: #27352a;
+  --top-nav-bg: #a1e4d3;
+  --nav-link-bg: #c9eede;
+  --nav-link-text: #1C7C54;
+  --nav-link-bg-hover: #8DFCF1;
+  --nav-link-text-hover: #398eb6;
+  --toggle-track-off: #b0cfc2;
+  --toggle-track-on: #74b72e;
+  --toggle-knob: 	#f1f1f1;
+  --page-title-headers: #1C7C54;
+  --page-section-headers: #1C7C54;
+  --button-bg: #1C7C545d;
+  --button-text: #1C7C54;
+  --button-bg-hover: #1C7C54a9;
+  --button-text-hover: #CFFFD0;
+  --dropdown-menu: #CFFFD0;
+}
+/* Dark Mode Themeing */
+body.dark-mode {
+  --bg-color: #131917;
+  --text-color: #d7efdf;
+  --top-nav-bg: #1f3b34;
+  --nav-link-bg: #2c4a40;
+  --nav-link-text: #A3D9C8;
+  --nav-link-bg-hover: #c9bc8e;
+  --nav-link-text-hover: #5f583f;
+  --toggle-track-off: #334b44;
+  --toggle-track-on: #70e1c2;
+  --toggle-knob: 	#252525;
+  --page-title-headers: #A3D9C8;
+  --page-section-headers: #A3D9C8;
+  --button-bg: #a3d9c85d;
+  --button-text: #A3D9C8;
+  --button-bg-hover: #a3d9c8a9;
+  --button-text-hover: #3c5a1d;
+  --dropdown-menu: #3f4242;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 12px;
+  padding: 10px;
+  font-family: 'Mulish', sans-serif;
+  --rose-accent: #f49aeb;
+  --lavender-accent: #cf9af4;
+  --clay-accent: #3f4242;
+  --pollen-accent: #c9bc8e;
+  --muted-dandelion-accent: #5f583f;
+  --muted-blue-accent: #3b719f;
+  --pear-accent: #74b72e;
+  --blood-orange-accent: #ed9854;
+  --forrest-fern-accent: #CFFFD0;
+  --aqua-accent: #8DFCF1;
+  --rosewood-accent: #C85165;
+}
+
+/* Text */
+
+.mainHeader {
+  padding-top: 40px;
+  color: var(--page-title-headers);
+}
+
+.mainHeroHeader{
+  color: var(--page-section-headers);
+}
+/* Media */
+/* Widgets */
+
+
+/* ==================================================
+  Overview Page
+================================================== */
+
+/* Page */
+.dashboardContainer {
+  display: flex;
+  gap: 20px;
+}
+/* Text */
+/* Media */
+/* Widgets */
+.dashboardStatusContainer {
+  width: auto;
+  height: auto;
+  border-radius: 15px;
+  background-color: #333;
+}
+
+.dashboardForecastContainer {
+  width: auto;
+  height: auto;
+  border-radius: 15px;
+  background-color: #333;
+}
+/* ==================================================
+  Controller Page
+================================================== */
+
+/* Page */
+/* Text */
+.scheduleRow {
+  display: grid;
+  grid-template-columns: 120px 40px 1fr;
+  align-items: center;
+  column-gap: 40px;
+  row-gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.schedulingLabel {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: var(--page-section-headers);
+  align-self: center;
+  white-space: nowrap;
+}
+
+.scheduleRow input[type="checkbox"] {
+  transform: scale(1.5);
+  margin: auto;
+  margin-left: 5.5rem;
+  display: block;
+  align-self: center;
+}
+
+.timeSelectors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rem;
+  flex-grow: 1;
+  margin-left: 8.5rem;
+}
+
+.timeSlot {
+  display: flex;
+  gap: 8px;
+}
+
+/* Time Selectors */
+.timeDropdown,
+.ampmDropdown {
+  padding: 8px 12px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 2px solid var(--page-section-headers);
+  background-color: var(--top-nav-bg);
+  color: var(--text-color);
+  outline: none;
+  transition: border-color 0.3s, background-color 0.3s;
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 90px;
+  text-align: center;
+}
+
+/* Hover/Focus/Disabled (unchanged) */
+.timeDropdown:hover,
+.ampmDropdown:hover {
+  background-color: var(--nav-link-bg-hover);
+  border-color: var(--nav-link-text-hover);
+}
+
+.timeDropdown:focus,
+.ampmDropdown:focus {
+  border-color: var(--toggle-track-on);
+  background-color: var(--dropdown-menu);
+}
+
+.timeDropdown:disabled,
+.ampmDropdown:disabled {
+  background-color: #88888840;
+  color: #999;
+  border-color: #55555560;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Full-width Submit Button */
+#saveScheduleBtn {
+  background-color: var(--button-bg);
+  font-size: 2rem;
+  color: var(--button-text);
+  border-color: transparent;
+  border-radius: 21px;
+  width: 100%;
+  padding: 14px;
+  margin-top: 30px;
+  font-family: 'Mulish', sans-serif;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: background-color 0.3s ease;
+}
+
+#saveScheduleBtn:hover {
+  background-color: var(--button-bg-hover);
+  color: var(--button-text-hover);
+  box-shadow: inset 0 0 B6px rgba(0,0,0,0.2);
+}
+
+/* Widgets */
+.actionsContainer .slider {
+  background-color: var(--about-section-headers);
+  border-radius: 999px;
+  width: 50px;
+  height: 30px;
+}
+
+#mistToggle + .slider::before,
+#autoMistToggle + .slider::before{
+  background-color: var(--top-nav-bg);
+}
+
+#mistToggle:checked + .slider,
+#autoMistToggle:checked + .slider {
+  background-color: var(--toggle-track-on);
+  border-radius: 999px;
+  width: 50px;
+  height: 30px;
+  display: inline-block;
+}
+
+.timeSelectors,
+#autoMistingEnabledLabel,
+#mistEnabledLabel {
+  font-family: 'Mulish', sans-serif;
+  font-weight: 500;
+}
+
+#autoMistingEnabledLabel,
+#mistEnabledLabel {
+  font-size: 1.2rem;
+}
+/* ==================================================
+  Data Page
+================================================== */
+
+/* Page */
+/* Text */
+/* Media */
+/* Widgets */
+
+/* ==================================================
+  Weather Page
+================================================== */
+
+/* Page */
+/* Text */
+/* Media */
+/* Widgets */
+
+/* ==================================================
+  Console Page
+================================================== */
+
+/* Page */
+/* Text */
+/* Media */
+/* Widgets */
+
+/* ==================================================
+  Auth Page
+================================================== */
+
+/* Page */
+/* Text */
+
+.authScreenHeaderContainer {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: -40px;
+}
+
+h6.footnote {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 4px;
+  font-family: 'Mulish', sans-serif;
+  color: var(--text-color);
+}
+
+.footnote a {
+  color: var(--nav-link-text);
+}
+
+h2.otherHeader {
+  font-size: 25px;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  font-family: 'Mulish', sans-serif;
+  color: var(--text-color) !important;
+}
+
+label.authForm {
+  display: flex;
+  padding-bottom: 4px;
+  font-family: 'Mulish', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  height: auto;
+  width: auto;
+
+  align-items:center;
+  justify-content: center;
+  color: var(--text-color) !important;
+}
+
+.authFormContainer input[type="text"],
+.authFormContainer input[type="password"] {
+  text-align: center;
+  font-family: 'Mulish', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  border-color: #d4d4d4;
+  border-width: 5px;
+}
+
+.authFormContainer input {
+  outline-color: rgba(0, 0, 0, 0);
+}
+
+/* Media */
+
+.authLogo {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  margin-top: -15px;
+}
+
+.authLogo img {
+  height: 124px;
+  width: auto;
+  margin-right: -5px;
+}
+
+/* Widgets */
+
+.authFormContainer h2,
+.authFormContainer input,
+.authFormContainer button,
+.authFormContainer {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+div.authFormContainer {
+  background-color: #ecececa1;
+  padding: 20px;
+  padding-left: 10%;
+  padding-right: 10%;
+  width: max-content;
+  margin-top: -30px;
+  border-radius: 21px;
+}
+
+.authFormContainer button {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 25px;
+  border-color: transparent;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  box-shadow: 0 3px 4px 2px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.4s, ease-in-out 0.4s;
+}
+
+.authFormContainer button:hover {
+  font-size: 2rem;
+  margin-top: 25px;
+  border-color: transparent;
+  background-color: var(--button-bg-hover);
+  color: var(--button-text-hover);
+  box-shadow: inset 0 3px 4px 2px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.4s, ease-in-out 0.2s;
+}
+
+div.passwordContainer {
+  margin-top: 1.5rem;
+}
+
+div.usernameContainer {
+  margin-top: -.25rem;
+}
+
+div.rememberMeContainer {
+  margin-top: 1.5rem;
+}
+
+button.authSubmit {
+  border-radius: 21px;
+  border-color: transparent;
+  border-width: 5px;
+  padding: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-family: 'Mulish', sans-serif;
+}
+
+#auth_username_field,
+#auth_password_field,
+#auth_pin_field,
+#rememberMeCheck {
+  border-radius: 21px;
+  padding: 10px;
+}
+
+/* ==================================================
+  About Page
+================================================== */
+
+/* Page */
+/* Text */
+.aboutParagraph {
+  margin-bottom: 25px;
+  line-height: 1.75;
+  color: var(--about-text);
+}
+
+p.aboutParagraph {
+  margin-right: 450px;
+}
+
+span.aboutDescription {
+  display: inline-block;
+  text-indent: 6px;
+  margin-left: 10px;
+  line-height: 1.25;
+  color: #808080;
+}
+
+:root {
+  --about-section-headers: #C85165;
+  --about-section-links: #568b1d;
+  --about-text: #1C7C54;
+}
+body.dark-mode{
+  --about-section-headers: #ed9854;
+  --about-section-links: #9b9069;
+  --about-text: #CFFFD0;
+}
+
+.aboutParagraph strong {
+  color: var(--about-section-headers);
+  margin-left: 10px;
+}
+
+.aboutParagraph a {
+  text-decoration-thickness: 0.5px;
+  color: var(--about-section-links);
+}
+/* Media */
+/* Widgets */
+
+/* Needs MAJOR organization + redundancies need to be handled */

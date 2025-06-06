@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GardenPi Portal - About</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
+	<script src="../simplelogic.js"></script>
+</head>
+<body>
+
+<nav class="topNavBar">
+  <div class="navGPiContainer">
+    <div class="navLogo">
+      <a href="/overview">
+        <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+      </a>
+    </div>
+    <div class="navGPi">
+      <h1>GardenPi+ Portal</h1>
+    </div>
+  </div>
+  <div class="navMain">
+    <div class="navContainer">
+      <div class="navLinks">
+        <a href="../overview">Overview</a>
+        <a href="../controller">Controller</a>
+        <a href="../data">Data</a>
+        <a href="../weather-data">Weather</a>
+        <a href="../console">Console</a>
+        <a href="../about">About</a>
+      </div>
+      <div class="navRight">
+        <div class="navClock">
+          <p><span id="clockTime">--:--:--</span></p>
+        </div>
+        <div class="navToggle">
+          <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider">
+              <span class="icon sun">☀️</span>
+              <span class="icon moon">🌙</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<h1 class="mainHeader">About</h1>
+
+<h2 class="mainHeroHeader">Software Information -</h2>
+<p class="aboutParagraph">
+<strong>Version:</strong> GardenPi+ v1.0 (Public Release 1)<br>
+<strong>Author & Developer:</strong> 
+	<a href="https://github.com/irvingkennet45" rel="author" target="_blank" class="aboutLinks">
+		Kenneth Irving (irvingkennet45)
+	</a><br>
+<strong>Repository:</strong>
+	<a href="https://github.com/irvingkennet45/GardenPi_Plus" rel="author" target="_blank" class="aboutLinks">
+		GardenPi+ on Github
+	</a><br>
+<strong>Description:</strong> <br>
+<span class="aboutDescription">GardenPi+ is a modular, WiFi-enabled smart irrigation system powered by the Raspberry Pi Pico W. Designed for both home gardeners and tinkerers, it automates misting and watering cycles based on customizable schedules, environmental feedback (if setup), and real-time weather data.</span>
+<br>
+<span class="aboutDescription">With a lightweight onboard web portal, secure login system, and support for OTA time sync, GPIO-controlled solenoids, and weather-based logic, GardenPi+ offers precise and efficient control over your garden's maintainence — whether you're at home or away!</span>
+<br>
+<strong>Last Update:</strong> 6/4/2025 (June 4th, 2025)<br>
+<strong>License:</strong> <em>None</em><br>
+</p>
+
+<h2 class="mainHeroHeader">Device Information -</h2>
+<p class="aboutParagraph">
+<strong>Architecture:</strong> <em>unknown</em><br>
+<strong>Processor:</strong> <em>unknown</em><br>
+<strong>RAM:</strong> <em>unknown</em><br>
+<strong>OS:</strong> N/A<br>
+<strong>Model:</strong> <em>unknown</em><br>
+<strong>Manufacturer:</strong> <em>None</em><br>
+<strong>Serial:</strong> <em>Cannot fetch</em><br><br>
+
+<strong>Uptime:</strong> <em>unknown</em><br>
+<strong>Core Temperature:</strong> <em>unknown</em><br>
+<strong>Last Runtime:</strong> <em>unknown</em>
+</p> <!--Not in use yet. Will be able to grab hardware information and serve it accordingly.-->
+
+
+</body>
+</html>

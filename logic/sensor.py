@@ -1,0 +1,1 @@
+# Sensor data handling. Directs to functions + serves as specified. Also handles logging information from sensors. Not in use yet.

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GardenPi - Login to Your GardenPi+ Portal</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles.css">
+	<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+	<script>
+		async function authenticateUser() {
+			event.preventDefault();
+			const username = document.getElementById("auth_username_field").value;
+			const password = document.getElementById("auth_password_field").value;
+			const pin = document.getElementById("auth_pin_field").value;
+
+			const payload = JSON.stringify({ username, password, pin });
+
+			try {
+				const response = await fetch("/api/auth", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: payload
+				});
+
+				const result = await response.json();
+				if (result.success) {
+					window.location.href = "/overview";
+				} else {
+					alert("Authentication failed: " + result.message);
+				}
+			} catch (err) {
+				alert("Error contacting server.");
+				console.error(err);
+			}
+		}
+	</script>
+</head>
+<body>
+
+<div class="authLogo">
+	<img src="../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+</div>
+
+<div class="authScreenHeaderContainer">
+	<h1 class="mainHeader" id="authScreenHeader">Login to Your GardenPi+ Portal</h1>
+</div>
+
+<div class="authFormContainer">
+	<form onsubmit="authenticateUser()">
+		<div class="usernameContainer">
+			<label for="auth_user" class="authForm">Username</label>
+			<input type="text" name="auth_user" id="auth_username_field" required>
+		</div>
+		<div class="passwordContainer">
+			<label for="auth_pass" class="authForm">Password</label>
+			<input type="password" name="auth_pass" id="auth_password_field">
+		</div>
+		<h2 class="otherHeader">or, use your PIN:</h2>
+		<div class="pinContainer">
+			<label for="auth_pin" class="authForm">PIN</label>
+			<input type="password" name="auth_pin" id="auth_pin_field" maxlength="6">
+		</div>
+		<div class="rememberMeContainer">
+			<label for="rememberMe" class="authForm">Remember Me?</label>
+			<input type="checkbox" name="rememberMe" id="rememberMeCheck">
+		</div>
+		<button type="submit" class="authSubmit">Login</button>
+
+	</form>
+</div>
+
+<h6 class="footnote">
+	If you're having trouble, refer to the README file, or 
+	<a href="https://github.com/irvingkennet45/GardenPi_Plus" rel="author" target="_blank" class="aboutLinks">
+		visit the GardenPi+ Repo on Github.
+	</a>
+</h6>
+</body>
+</html>
+
+<!--
+Ready to be used. This file handles the authentication using a user name and password, 
+and will eventually have persistent cookies using the "Remember Me?" checkbox.
+-->
