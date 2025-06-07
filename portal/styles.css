@@ -78,7 +78,9 @@ nav.topNavBar {
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  transition: background 0.6s ease-in-out, color 0.3s;
+  transition:
+    background 0.6s ease-in-out,
+    color 0.3s;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -102,7 +104,9 @@ nav.topNavBar {
   color: var(--nav-link-text);
   background-color: var(--nav-link-bg);
   border-radius: 21px;
-  transition: background 0.4s, color 0.4s;
+  transition:
+    background 0.4s,
+    color 0.4s;
 }
 
 .navToggle {
@@ -187,7 +191,6 @@ nav.topNavBar {
   margin-right: 10px;
 }
 
-
 /* Page */
 /* Default Themeing */
 :root {
@@ -195,19 +198,19 @@ nav.topNavBar {
   --text-color: #27352a;
   --top-nav-bg: #a1e4d3;
   --nav-link-bg: #c9eede;
-  --nav-link-text: #1C7C54;
-  --nav-link-bg-hover: #8DFCF1;
+  --nav-link-text: #1c7c54;
+  --nav-link-bg-hover: #8dfcf1;
   --nav-link-text-hover: #398eb6;
   --toggle-track-off: #b0cfc2;
   --toggle-track-on: #74b72e;
-  --toggle-knob: 	#f1f1f1;
-  --page-title-headers: #1C7C54;
-  --page-section-headers: #1C7C54;
-  --button-bg: #1C7C545d;
-  --button-text: #1C7C54;
-  --button-bg-hover: #1C7C54a9;
-  --button-text-hover: #CFFFD0;
-  --dropdown-menu: #CFFFD0;
+  --toggle-knob: #f1f1f1;
+  --page-title-headers: #1c7c54;
+  --page-section-headers: #1c7c54;
+  --button-bg: #1c7c545d;
+  --button-text: #1c7c54;
+  --button-bg-hover: #1c7c54a9;
+  --button-text-hover: #cfffd0;
+  --dropdown-menu: #cfffd0;
 }
 /* Dark Mode Themeing */
 body.dark-mode {
@@ -215,16 +218,16 @@ body.dark-mode {
   --text-color: #d7efdf;
   --top-nav-bg: #1f3b34;
   --nav-link-bg: #2c4a40;
-  --nav-link-text: #A3D9C8;
+  --nav-link-text: #a3d9c8;
   --nav-link-bg-hover: #c9bc8e;
   --nav-link-text-hover: #5f583f;
   --toggle-track-off: #334b44;
   --toggle-track-on: #70e1c2;
-  --toggle-knob: 	#252525;
-  --page-title-headers: #A3D9C8;
-  --page-section-headers: #A3D9C8;
+  --toggle-knob: #252525;
+  --page-title-headers: #a3d9c8;
+  --page-section-headers: #a3d9c8;
   --button-bg: #a3d9c85d;
-  --button-text: #A3D9C8;
+  --button-text: #a3d9c8;
   --button-bg-hover: #a3d9c8a9;
   --button-text-hover: #3c5a1d;
   --dropdown-menu: #3f4242;
@@ -235,7 +238,7 @@ body {
   color: var(--text-color);
   margin: 12px;
   padding: 10px;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   --rose-accent: #f49aeb;
   --lavender-accent: #cf9af4;
   --clay-accent: #3f4242;
@@ -244,9 +247,9 @@ body {
   --muted-blue-accent: #3b719f;
   --pear-accent: #74b72e;
   --blood-orange-accent: #ed9854;
-  --forrest-fern-accent: #CFFFD0;
-  --aqua-accent: #8DFCF1;
-  --rosewood-accent: #C85165;
+  --forrest-fern-accent: #cfffd0;
+  --aqua-accent: #8dfcf1;
+  --rosewood-accent: #c85165;
 }
 
 /* Text */
@@ -256,12 +259,11 @@ body {
   color: var(--page-title-headers);
 }
 
-.mainHeroHeader{
+.mainHeroHeader {
   color: var(--page-section-headers);
 }
 /* Media */
 /* Widgets */
-
 
 /* ==================================================
   Overview Page
@@ -342,7 +344,9 @@ body {
   background-color: var(--top-nav-bg);
   color: var(--text-color);
   outline: none;
-  transition: border-color 0.3s, background-color 0.3s;
+  transition:
+    border-color 0.3s,
+    background-color 0.3s;
   appearance: none;
   -webkit-appearance: none;
   min-width: 90px;
@@ -381,16 +385,16 @@ body {
   width: 100%;
   padding: 14px;
   margin-top: 30px;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   font-weight: 700;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transition: background-color 0.3s ease;
 }
 
 #saveScheduleBtn:hover {
   background-color: var(--button-bg-hover);
   color: var(--button-text-hover);
-  box-shadow: inset 0 0 B6px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 B6px rgba(0, 0, 0, 0.2);
 }
 
 /* Widgets */
@@ -402,7 +406,7 @@ body {
 }
 
 #mistToggle + .slider::before,
-#autoMistToggle + .slider::before{
+#autoMistToggle + .slider::before {
   background-color: var(--top-nav-bg);
 }
 
@@ -418,7 +422,7 @@ body {
 .timeSelectors,
 #autoMistingEnabledLabel,
 #mistEnabledLabel {
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   font-weight: 500;
 }
 
@@ -476,7 +480,7 @@ h6.footnote {
   align-items: center;
   margin-top: 1rem;
   gap: 4px;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   color: var(--text-color);
 }
 
@@ -488,20 +492,20 @@ h2.otherHeader {
   font-size: 25px;
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   color: var(--text-color) !important;
 }
 
 label.authForm {
   display: flex;
   padding-bottom: 4px;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   font-size: 16px;
   font-weight: 700;
   height: auto;
   width: auto;
 
-  align-items:center;
+  align-items: center;
   justify-content: center;
   color: var(--text-color) !important;
 }
@@ -509,7 +513,7 @@ label.authForm {
 .authFormContainer input[type="text"],
 .authFormContainer input[type="password"] {
   text-align: center;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
   font-size: 12px;
   font-weight: bold;
   border-color: #d4d4d4;
@@ -566,7 +570,9 @@ div.authFormContainer {
   background-color: var(--button-bg);
   color: var(--button-text);
   box-shadow: 0 3px 4px 2px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.4s, ease-in-out 0.4s;
+  transition:
+    box-shadow 0.4s,
+    ease-in-out 0.4s;
 }
 
 .authFormContainer button:hover {
@@ -576,7 +582,9 @@ div.authFormContainer {
   background-color: var(--button-bg-hover);
   color: var(--button-text-hover);
   box-shadow: inset 0 3px 4px 2px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.4s, ease-in-out 0.2s;
+  transition:
+    box-shadow 0.4s,
+    ease-in-out 0.2s;
 }
 
 div.passwordContainer {
@@ -584,7 +592,7 @@ div.passwordContainer {
 }
 
 div.usernameContainer {
-  margin-top: -.25rem;
+  margin-top: -0.25rem;
 }
 
 div.rememberMeContainer {
@@ -598,7 +606,7 @@ button.authSubmit {
   padding: 10px;
   padding-left: 30px;
   padding-right: 30px;
-  font-family: 'Mulish', sans-serif;
+  font-family: "Mulish", sans-serif;
 }
 
 #auth_username_field,
@@ -634,14 +642,14 @@ span.aboutDescription {
 }
 
 :root {
-  --about-section-headers: #C85165;
+  --about-section-headers: #c85165;
   --about-section-links: #568b1d;
-  --about-text: #1C7C54;
+  --about-text: #1c7c54;
 }
-body.dark-mode{
+body.dark-mode {
   --about-section-headers: #ed9854;
   --about-section-links: #9b9069;
-  --about-text: #CFFFD0;
+  --about-text: #cfffd0;
 }
 
 .aboutParagraph strong {
