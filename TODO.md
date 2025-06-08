@@ -7,7 +7,7 @@ This is the TODO list for the GardenPi+ project.
 <strong>Active:</strong> Yes <br>
 <strong>First Commit:</strong> June 4th, 2025 <br>
 <strong>Active Pull Requests:</strong> No <br>
-<strong>Last Updated:</strong> June 5th, 2025 <br>
+<strong>Last Updated:</strong> June 7th, 2025 <br>
 
 <strong>Working:</strong> Functionality severly limited
 
