@@ -28,6 +28,41 @@ def hash_password(value):
     h.update(value.encode("utf-8"))
     return h.digest().hex()
 
+def generate_token():
+    return hash_password(str(time.ticks_ms()))
+
+def load_security():
+    try:
+        with open(SECURITY_FILE, "r") as f:
+            return json.load(f)
+    except:
+        return {}
+
+def save_security(data):
+    with open(SECURITY_FILE, "w") as f:
+        json.dump(data, f)
+
+def parse_headers(req):
+    headers = {}
+    for line in req.split("\r\n")[1:]:
+        if ": " in line:
+            k, v = line.split(": ", 1)
+            headers[k.lower()] = v
+    return headers
+
+def get_cookie(headers, name):
+    cookies = headers.get("cookie", "")
+    for pair in cookies.split(";"):
+        if "=" in pair:
+            k, v = pair.strip().split("=", 1)
+            if k == name:
+                return v
+    return None
+
+def verify_session(token):
+    data = load_security()
+    return token and token == data.get("session_token")
+
 def get_mime_type(path):
     if path.endswith(".css"):
         return "text/css"
@@ -45,11 +80,7 @@ def get_mime_type(path):
 
 # --------- Auth ---------
 def verify_credentials(username, password, pin=None):
-    try:
-        with open(SECURITY_FILE, "r") as f:
-            data = json.load(f)
-    except:
-        return False
+    data = load_security()
 
     updated = False
     if "password" in data:
@@ -61,8 +92,7 @@ def verify_credentials(username, password, pin=None):
         del data["pin"]
         updated = True
     if updated:
-        with open(SECURITY_FILE, "w") as f:
-            json.dump(data, f)
+        save_security(data)
 
     if pin:
         return hash_password(pin) == data.get("pin_hash")
@@ -100,15 +130,19 @@ def network_config():
         return
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    wlan.connect(ssid, password)
-    for _ in range(10):
-        if wlan.isconnected():
-            break
-        time.sleep(1)
-    if wlan.isconnected():
-        print("[NETWORK] Connected:", wlan.ifconfig())
-    else:
-        print("[NETWORK] Connection failed.")
+    attempt = 0
+    while not wlan.isconnected():
+        if attempt and attempt % 10 == 0:
+            print("[NETWORK] retrying in 5 minutes...")
+            time.sleep(300)
+        print(f"[NETWORK] Connecting to {ssid} (attempt {attempt + 1})")
+        wlan.connect(ssid, password)
+        for _ in range(10):
+            if wlan.isconnected():
+                break
+            time.sleep(1)
+        attempt += 1
+    print("[NETWORK] Connected:", wlan.ifconfig())
 
 # --------- NTP ---------
 def ntp_config():
@@ -129,9 +163,13 @@ def ntp_config():
     return t
 
 # --------- JSON API ---------
-def http_json(obj):
+def http_json(obj, extra_headers=None):
     body = json.dumps(obj)
-    return f"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {len(body)}\r\n\r\n{body}".encode()
+    headers = ""
+    if extra_headers:
+        for k, v in extra_headers.items():
+            headers += f"{k}: {v}\r\n"
+    return f"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {len(body)}\r\n{headers}\r\n{body}".encode()
 
 # --------- Misting Control ---------
 def update_misting_status(enabled, active):
@@ -242,10 +280,27 @@ def web_server():
             cl.close()
             continue
 
+        headers = parse_headers(req)
         lines = req.split("\r\n")
         method, path = lines[0].split(" ")[:2]
+        session = get_cookie(headers, "session")
+        authenticated = verify_session(session) or auto_authenticate()
 
-        if method == "POST" and path == "/api/misting":
+        if method == "POST" and path == "/api/auth":
+            data = json.loads(req.split("\r\n\r\n", 1)[-1])
+            if verify_credentials(data.get("username", ""), data.get("password", ""), data.get("pin")):
+                token = generate_token()
+                sec = load_security()
+                sec["session_token"] = token
+                save_security(sec)
+                headers = {"Set-Cookie": f"session={token}; Path=/"}
+                if data.get("remember"):
+                    headers["Set-Cookie"] += "; Max-Age=604800"
+                cl.send(http_json({"success": True, "token": token}, headers))
+            else:
+                cl.send(http_json({"success": False, "message": "Invalid credentials"}))
+
+        elif method == "POST" and path == "/api/misting":
             data = req.split("\r\n\r\n", 1)[-1]
             cl.send(update_misting_status(**json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
 
@@ -257,6 +312,10 @@ def web_server():
             cl.send(handle_get_config())
 
         else:
+            if path != "/" and not authenticated and not path.startswith("/assets"):
+                cl.send(b"HTTP/1.1 302 Found\r\nLocation: /\r\n\r\n")
+                cl.close()
+                continue
             path = "/portal/index.html" if path == "/" else "/portal" + path
             for chunk in serve_file(path):
                 try:
