@@ -519,6 +519,11 @@ label.authForm {
   border-width: 5px;
 }
 
+.authNavToggle {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
 .authFormContainer input {
   outline-color: rgba(0, 0, 0, 0);
 }
