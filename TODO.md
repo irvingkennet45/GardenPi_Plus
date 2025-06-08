@@ -50,15 +50,15 @@ This is the TODO list for the GardenPi+ project.
 - [x] Run main.py on boot
 - [x] Cache images and other large media in the client's browser in order to offload the Pico already-limited RAM overhead.
     - [ ] Potentially store images in a public cloud, or even in the repository to free up space.
-- [ ] Clean-ip files, getting rid of extra and unecessary fluff, as well as better organization
+- [ ] Clean-up files, getting rid of extra and unecessary fluff, as well as better organization
 
 ## Release
 
 - [x] Initialize the repoistory
 - [x] Publish the repository publicly
 - [x] Reach an "alpha" build
-- [ ] Compile versions into drag-n-drop projects for ease of use *(not yet implemented)*
-    - [ ] Create a desktop installer, allowing for the Pico to be flashed and the GardenPi+ to be configured before upload. (Requires C) *(impossible for now)*
+- [ ] Compile versions into drag-n-drop projects for ease of use *(Not yet implemented)*
+    - [ ] Create a desktop installer, allowing for the Pico to be flashed and the GardenPi+ to be configured before upload. (Requires C) *(Impossible for now, I both hate and do not fully know C or C++, so this will require large commitments of time which I currently do not have. Will be worked on off and on, but will not be prioritized.)*
 
 ## Done
 
