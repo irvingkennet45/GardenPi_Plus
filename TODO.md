@@ -21,7 +21,7 @@ This is the TODO list for the GardenPi+ project.
     - [x] Browser Cookies for Persistent Sessions
     - [x] MAC Auto- Authentication
 - [x] Weather API Integration
-    - [ ] Live Weather Map *(impossible in current environment)*
+    - [-] Live Weather Map *(impossible using a RPi Pico. Requires more RAM. Will not be worked on.)*
     - [x] 3-week Persistent Weather Data Logging
     - [x] Weather-aware Misting Automation
 - [x] Create a "sleep" mode
@@ -30,8 +30,8 @@ This is the TODO list for the GardenPi+ project.
 - [x] Create security dependencies for the device (e.g. zero-trust architecture, only opening necessary ports)
 - [x] Request hardware information from device for the "About" page.
     - [x] Periodically request internal sensor updates, such as temperature, storage free, etc.
-- [ ] Configure trustworthiness so that browsers enable the use of all permissions. *(requires SSL setup)*
-    - [ ] Potentially requires automated SSL certificate creation *(impossible in current environment)*
+- [-] Configure trustworthiness so that browsers enable the use of all permissions. *(requires SSL setup)*
+    - [-] Potentially requires automated SSL certificate creation *(Users will need to set this up themseleves if they would like to, but it will not be worked on.)*
     - [x] Progressive Web App, if possible
 - [x] Add a README file within the /logic directory for documentation and user guidance
 
@@ -40,6 +40,8 @@ This is the TODO list for the GardenPi+ project.
 
 - [x] Fix the favicon not displaying when running the webserver on the Pico
 - [x] Either replace with a regular image file, or fix the way the .gif Logo is displayed
+- [ ] Fix the timing bug in the .py logic
+    - [ ] Fix the scheduling requiring a client to connect in order to run
 
 ## Changes
 
