@@ -7,7 +7,7 @@
   "theme_color": "#4caf50",
   "icons": [
     {
-      "src": "/assets/favicon.ico",
+      "src": "https://raw.githubusercontent.com/irvingkennet45/GardenPi_Plus/refs/heads/main/assets/favicon.ico",
       "sizes": "48x48 72x72 96x96 128x128",
       "type": "image/x-icon"
     }

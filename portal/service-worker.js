@@ -3,7 +3,7 @@ const OFFLINE_URLS = [
   '/',
   '/portal/styles.css',
   '/portal/simplelogic.js',
-  '/assets/favicon.ico'
+  'https://raw.githubusercontent.com/irvingkennet45/GardenPi_Plus/refs/heads/main/assets/favicon.ico'
 ];
 
 self.addEventListener('install', event => {
