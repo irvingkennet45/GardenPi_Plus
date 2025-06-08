@@ -3,11 +3,12 @@
 <head>
 	<title>GardenPi - Login to Your GardenPi+ Portal</title>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" href="styles.css">
-	<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="styles.css">
+        <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
         <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/irvingkennet45/GardenPi_Plus/refs/heads/main/assets/favicon.ico">
         <link rel="manifest" href="/manifest.json">
-	<script>
+        <script src="simplelogic.js"></script>
+        <script>
                 async function authenticateUser() {
                         event.preventDefault();
                         const username = document.getElementById("auth_username_field").value;
@@ -47,6 +48,16 @@
 
 <div class="authLogo">
     <img src="https://github.com/irvingkennet45/GardenPi_Plus/blob/main/assets/garden.gif?raw=true" alt="GardenPi+" class="logoIcon">
+</div>
+
+<div class="authNavToggle navToggle">
+    <label class="switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider">
+            <span class="icon sun">☀️</span>
+            <span class="icon moon">🌙</span>
+        </span>
+    </label>
 </div>
 
 <div class="authScreenHeaderContainer">

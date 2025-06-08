@@ -369,14 +369,36 @@ def fetch_forecast(lat, lon):
         import urequests
         api = load_api_config()
         base = api.get("weather_points_base", "https://api.weather.gov/points")
+
         r = urequests.get(f"{base}/{lat},{lon}")
-        pt = r.json()
-        r.close()
-        url = pt["properties"]["forecast"]
+        if r.status_code != 200:
+            print(f"[ERROR] Weather fetch failed: status {r.status_code}")
+            r.close()
+            return []
+        try:
+            pt = r.json()
+        finally:
+            r.close()
+
+        url = pt.get("properties", {}).get("forecast")
+        if not url:
+            return []
+
         r = urequests.get(url)
-        data = r.json()
-        r.close()
-        return data["properties"]["periods"]
+        if r.status_code != 200:
+            print(f"[ERROR] Weather fetch failed: status {r.status_code}")
+            r.close()
+            return []
+        try:
+            data = r.json()
+        finally:
+            r.close()
+
+        return data.get("properties", {}).get("periods", [])
+    except ValueError as e:
+        # JSON parsing error
+        print(f"[ERROR] Weather fetch failed: {e}")
+        return []
     except Exception as e:
         print(f"[ERROR] Weather fetch failed: {e}")
         return []
@@ -491,6 +513,7 @@ def web_server():
         except OSError:
             continue
         try:
+            cl.settimeout(5)
             req = cl.recv(1024).decode("utf-8")
             if not req:
                 continue
@@ -572,6 +595,8 @@ def web_server():
                     file_path = "portal" + path
                 for chunk in serve_file(file_path):
                     cl.send(chunk)
+        except OSError as e:
+            print(f"[WEB] client error: {e}")
         finally:
             cl.close()
 
