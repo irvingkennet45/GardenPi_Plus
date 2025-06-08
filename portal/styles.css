@@ -665,3 +665,51 @@ body.dark-mode {
 /* Widgets */
 
 /* Needs MAJOR organization + redundancies need to be handled */
+
+/* ---------------- Weather Page ---------------- */
+.weatherForm {
+  margin-top: 120px;
+  text-align: center;
+}
+
+.weatherForm input {
+  margin: 0 5px;
+  padding: 6px 8px;
+}
+
+.forecastContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.forecastDay {
+  background: var(--nav-link-bg);
+  color: var(--nav-link-text);
+  padding: 15px;
+  border-radius: 21px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 150px;
+  text-align: center;
+}
+
+.autoMessage {
+  text-align: center;
+  color: crimson;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.weatherLog {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.weatherLog li {
+  margin: 4px 0;
+  color: var(--about-text);
+}

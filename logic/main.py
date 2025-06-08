@@ -12,6 +12,10 @@ import hashlib
 SECURITY_FILE = "/logging/security.json"
 WHITELIST_FILE = "/logging/whitelist.json"
 CONFIG_FILE = "/logging/config.json"
+WEATHER_LOG_FILE = "/logging/data.txt"
+
+# Weather checking
+last_weather_check = 0
 
 # Relay pin (GPIO15) setup
 RELAY_PIN = 15
@@ -206,6 +210,70 @@ def update_schedule(new_schedule):
         print(f"[ERROR] Schedule update failed: {e}")
         return False
 
+def log_weather(entry):
+    try:
+        with open(WEATHER_LOG_FILE, "r") as f:
+            history = json.load(f)
+    except:
+        history = []
+
+    history.append(entry)
+    if len(history) > 21:
+        history = history[-21:]
+
+    try:
+        with open(WEATHER_LOG_FILE, "w") as f:
+            json.dump(history, f)
+        return True
+    except Exception as e:
+        print(f"[ERROR] Weather log failed: {e}")
+        return False
+
+def fetch_forecast(lat, lon):
+    try:
+        import urequests
+        r = urequests.get(f"https://api.weather.gov/points/{lat},{lon}")
+        pt = r.json()
+        r.close()
+        url = pt["properties"]["forecast"]
+        r = urequests.get(url)
+        data = r.json()
+        r.close()
+        return data["properties"]["periods"]
+    except Exception as e:
+        print(f"[ERROR] Weather fetch failed: {e}")
+        return []
+
+def check_weather():
+    global last_weather_check
+    now = time.time()
+    if now - last_weather_check < 21600:
+        return
+    last_weather_check = now
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            cfg = json.load(f)
+        loc = cfg.get("location", {})
+        lat = loc.get("lat")
+        lon = loc.get("lon")
+        if lat is None or lon is None:
+            return
+        periods = fetch_forecast(lat, lon)
+        if not periods:
+            return
+        max_prob = 0
+        for p in periods[:7]:
+            v = p.get("probabilityOfPrecipitation", {}).get("value")
+            if v is None:
+                v = 0
+            if v > max_prob:
+                max_prob = v
+        if max_prob >= 60:
+            update_misting_status(False, False)
+        log_weather({"timestamp": now, "periods": periods[:7]})
+    except Exception as e:
+        print(f"[ERROR] Weather check failed: {e}")
+
 def handle_get_config():
     try:
         with open(CONFIG_FILE, "r") as f:
@@ -213,13 +281,15 @@ def handle_get_config():
         return http_json({
             "automation_enabled": config.get("misting_feature", {}).get("automation_enabled", False),
             "active": config.get("misting_feature", {}).get("active", False),
-            "schedule": config.get("schedule", {})
+            "schedule": config.get("schedule", {}),
+            "location": config.get("location", {})
         })
     except Exception as e:
         return http_json({"error": str(e)})
 
 # --------- Schedule Runner ---------
 def run_schedule():
+    check_weather()
     t = time.localtime(time.time() - 14400)  # Adjust for UTC-4
     current_min = t[3] * 60 + t[4]
     today = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][t[6]]
@@ -304,9 +374,25 @@ def web_server():
             data = req.split("\r\n\r\n", 1)[-1]
             cl.send(update_misting_status(**json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
 
+    while True:
+        run_schedule()
+        cl, addr = s.accept()
+        req = cl.recv(1024).decode("utf-8")
+        if not req:
+            cl.close()
+            continue
+
+        lines = req.split("\r\n")
+        method, path = lines[0].split(" ")[:2]
+
+        if method == "POST" and path == "/api/misting":
+            data = req.split("\r\n\r\n", 1)[-1]
+            cl.send(update_misting_status(**json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
+
         elif method == "POST" and path == "/api/schedule":
             data = req.split("\r\n\r\n", 1)[-1]
             cl.send(update_schedule(json.loads(data).get("schedule", {})) and http_json({"success": True}) or http_json({"success": False}))
+
 
         elif method == "GET" and path == "/api/config":
             cl.send(handle_get_config())
@@ -316,6 +402,30 @@ def web_server():
                 cl.send(b"HTTP/1.1 302 Found\r\nLocation: /\r\n\r\n")
                 cl.close()
                 continue
+            path = "/portal/index.html" if path == "/" else "/portal" + path
+            for chunk in serve_file(path):
+                try:
+                    cl.send(chunk)
+                except:
+                    break
+        cl.close()
+
+        elif method == "POST" and path == "/api/weather_log":
+            data = req.split("\r\n\r\n", 1)[-1]
+            cl.send(log_weather(json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
+
+        elif method == "GET" and path == "/api/weather_log":
+            try:
+                with open(WEATHER_LOG_FILE, "r") as f:
+                    log = json.load(f)
+            except:
+                log = []
+            cl.send(http_json({"log": log}))
+
+        elif method == "GET" and path == "/api/config":
+            cl.send(handle_get_config())
+
+        else:
             path = "/portal/index.html" if path == "/" else "/portal" + path
             for chunk in serve_file(path):
                 try:

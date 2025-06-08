@@ -14,6 +14,10 @@
         "automation_enabled": true,
         "active": false
     },
+    "location": {
+        "lat": 0,
+        "lon": 0
+    },
     "schedule": {
         "sun": [0, 0, 0, 0],
         "mon": [0, 0, 0, 0],
