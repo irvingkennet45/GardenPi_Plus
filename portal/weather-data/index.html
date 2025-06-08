@@ -1,110 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>GardenPi Portal - Weather</title>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="../styles.css">
-	<link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<script src="../simplelogic.js"></script>
+    <title>GardenPi Portal - Weather</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="../simplelogic.js"></script>
+    <script src="../weather_API.js"></script>
 </head>
 <body>
-
-<nav class="topNavBar">
-  <div class="navGPiContainer">
-    <div class="navLogo">
-      <a href="/overview">
-        <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
-      </a>
-    </div>
-    <div class="navGPi">
-      <h1>GardenPi+ Portal</h1>
-    </div>
-  </div>
-  <div class="navMain">
-    <div class="navContainer">
-      <div class="navLinks">
-        <a href="../overview">Overview</a>
-        <a href="../controller">Controller</a>
-        <a href="../data">Data</a>
-        <a href="../weather-data">Weather</a>
-        <a href="../console">Console</a>
-        <a href="../about">About</a>
-      </div>
-      <div class="navRight">
-        <div class="navClock">
-          <p><span id="clockTime">--:--:--</span></p>
+    <nav class="topNavBar">
+        <div class="navGPiContainer">
+            <div class="navLogo">
+                <a href="/overview">
+                    <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+                </a>
+            </div>
+            <div class="navGPi">
+                <h1>GardenPi+ Portal</h1>
+            </div>
         </div>
-        <div class="navToggle">
-          <label class="switch">
-            <input type="checkbox" id="themeToggle">
-            <span class="slider">
-              <span class="icon sun">☀️</span>
-              <span class="icon moon">🌙</span>
-            </span>
-          </label>
+        <div class="navMain">
+            <div class="navContainer">
+                <div class="navLinks">
+                    <a href="../overview">Overview</a>
+                    <a href="../controller">Controller</a>
+                    <a href="../data">Data</a>
+                    <a href="../weather-data">Weather</a>
+                    <a href="../console">Console</a>
+                    <a href="../about">About</a>
+                </div>
+                <div class="navRight">
+                    <div class="navClock">
+                        <p><span id="clockTime">--:--:--</span></p>
+                    </div>
+                    <div class="navToggle">
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="slider">
+                                <span class="icon sun">☀️</span>
+                                <span class="icon moon">🌙</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </nav>
+
+    <h1 class="mainHeader">Weather</h1>
+
+    <div class="weatherForm">
+        <form id="locationForm">
+            <label for="lat">Latitude</label>
+            <input type="text" id="lat" required>
+            <label for="lon">Longitude</label>
+            <input type="text" id="lon" required>
+            <button type="submit">Get Forecast</button>
+        </form>
     </div>
-  </div>
-</nav>
+    <p id="autoMessage" class="autoMessage"></p>
+    <div id="forecastContainer" class="forecastContainer"></div>
 
-<h1 class="mainHeader">Weather</h1> <!--NOAA API Weather Calls-->
-
-<h2 class="formHeader">Enter Your Zip Code or Address:</h2>
-  <form id="weatherLocation">
-
-    <label for="locationZip">Zip</label>
-    <input type="text" id="zip" name="zip"><br><br>
-
-	<h3 class="formHeads">or:</h3><br>
-
-    <label for="locationAddress1">Address Line 1</label>
-    <input type="text" id="address1" name="address1"><br><br>
-	<label for="locationAddress2">Address Line 2</label>
-    <input type="text" id="address2" name="address2"><br><br>
-	<label for="locationAddress">State</label>
-    <input type="text" id="adressState" name="addressState"><br><br>
-	<label for="locationAddress">City</label>
-    <input type="text" id="addressCity" name="addressCity"><br><br>
-	<label for="addressZip">Zip</label>
-    <input type="text" id="addressZip" name="addressZip"><br><br>
-
-    <button type="submit">Submit</button>
-  </form>
-
-<h2 class="mainHeroHeader">Numerics</h2>
-<div class="weatherNumerics"> <!--Entire Layout Of Weather Numerics-->
-
-	<div class="weatherBoxes">
-		<h3 class="numericsHeadings">Temperature</h3>
-	</div> <!--Temperature-->
-
-	<div class="weatherBoxes">
-		<h3 class="numericsHeadings"></h3>
-	</div> <!--Cloud Type-->
-
-	<div class="weatherBoxes">
-		<h3 class="numericsHeadings">Precipitation</h3>
-	</div> <!--Precipitation-->
-
-	<div class="weatherBoxes">
-		<h3 class="numericsHeadings">Humidity</h3>
-	</div> <!--Humidity-->
-
-	<div class="weatherBoxes">
-		<h3 class="numericsHeadings">Wind</h3>
-	</div> <!--Wind-->
-
-</div>
-
-<h2 class="mainHeroHeader">Forecast</h2>
-
-<h2 class="mainHeroHeader">Meterological Map</h2> <!--Live JS Weather Map-->
-
-<h2 class="mainHeroHeader">NOAA Alerts for Your Area</h2>
-
+    <h2 class="mainHeroHeader">Weather Log</h2>
+    <ul id="weatherLog" class="weatherLog"></ul>
 </body>
 </html>
-
-<!--Not in use yet. Will be able to serve logged data from .csv and .json files in a human-readable format.-->

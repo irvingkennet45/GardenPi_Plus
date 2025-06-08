@@ -1,1 +1,1 @@
-// Not currently ready yet. I don't know what all this will contain, but it will at least log the last 3 weeks of precipiation and temperatures.
+[]
