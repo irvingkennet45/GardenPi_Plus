@@ -3,7 +3,14 @@
   and delete the <script src="simplelogic.js"></script> in every file as well. */
 
 
-// Authentication
+// Authentication helper
+function checkSession() {
+  if (!document.body.classList.contains('noauth')) {
+    if (!document.cookie.includes('session=')) {
+      window.location.href = '/';
+    }
+  }
+}
 
 
 // Live Clock
@@ -25,6 +32,7 @@ setInterval(updateClock, 1000);
 window.onload = () => {
   updateClock();
   setupDarkMode();
+  checkSession();
 }
 
 // Dark Mode Toggle
