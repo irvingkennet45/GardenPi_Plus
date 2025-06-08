@@ -7,12 +7,31 @@ import socket
 import ujson as json
 import os
 import hashlib
+import io
+import gc
+
+# Close any default services to minimize open ports
+def close_extra_ports():
+    try:
+        import network
+        if hasattr(network, "server") and hasattr(network.server, "stop"):
+            network.server.stop()
+    except Exception:
+        pass
+    try:
+        import webrepl
+        webrepl.stop()
+    except Exception:
+        pass
 
 # File paths
 SECURITY_FILE = "/logging/security.json"
 WHITELIST_FILE = "/logging/whitelist.json"
 CONFIG_FILE = "/logging/config.json"
+API_CONFIG_FILE = "/logging/apis.json"
 WEATHER_LOG_FILE = "/logging/data.txt"
+HARDWARE_INFO_FILE = "/logging/hardware_info.json"
+VERSION_FILE = "/logging/version.json"
 
 # Weather checking
 last_weather_check = 0
@@ -45,6 +64,67 @@ def load_security():
 def save_security(data):
     with open(SECURITY_FILE, "w") as f:
         json.dump(data, f)
+
+def load_api_config():
+    try:
+        with open(API_CONFIG_FILE, "r") as f:
+            return json.load(f)
+    except:
+        return {}
+
+def load_version():
+    try:
+        with open(VERSION_FILE, "r") as f:
+            return json.load(f).get("version", "0.0")
+    except:
+        return "0.0"
+
+def save_version(v):
+    with open(VERSION_FILE, "w") as f:
+        json.dump({"version": v}, f)
+
+def ota_update(manifest_url, firmware_url):
+    if not manifest_url or not firmware_url:
+        return False, "OTA disabled"
+    try:
+        import urequests
+        # Fetch manifest
+        r = urequests.get(manifest_url)
+        if r.status_code != 200:
+            r.close()
+            return False, "Manifest fetch failed"
+        manifest = r.json()
+        r.close()
+        remote_ver = manifest.get("version")
+        checksum = manifest.get("sha256")
+        if remote_ver == load_version():
+            return False, "Already up to date"
+
+        # Stream firmware
+        r = urequests.get(firmware_url, stream=True)
+        if r.status_code != 200:
+            r.close()
+            return False, "Firmware fetch failed"
+        with open("/update.tmp", "wb") as f:
+            while True:
+                chunk = r.raw.read(512)
+                if not chunk:
+                    break
+                f.write(chunk)
+        r.close()
+
+        # (Optional) checksum verify could be here
+        try:
+            os.remove("/update.bin")
+        except OSError:
+            pass
+        os.rename("/update.tmp", "/update.bin")
+        save_version(remote_ver)
+        time.sleep(1)
+        machine.reset()
+        return True, "Updating"
+    except Exception as e:
+        return False, str(e)
 
 def parse_headers(req):
     headers = {}
@@ -81,6 +161,56 @@ def get_mime_type(path):
     elif path.endswith(".json"):
         return "application/json"
     return "text/html"
+
+def execute_code(src):
+    buf = io.StringIO()
+    try:
+        exec(src, globals(), {"print": lambda *a: buf.write(" ".join(map(str, a)) + "\n")})
+        return True, buf.getvalue()
+    except Exception as e:
+        return False, str(e)
+
+def get_hardware_info():
+    try:
+        with open(HARDWARE_INFO_FILE, "r") as f:
+            info = json.load(f)
+    except:
+        info = {}
+    alloc = gc.mem_alloc()
+    free = gc.mem_free()
+    info["mem_free"] = free
+    info["mem_alloc"] = alloc
+    info["mem_total"] = alloc + free
+    try:
+        sensor = machine.ADC(4)
+        reading = sensor.read_u16() * 3.3 / 65535
+        temp = 27 - (reading - 0.706) / 0.001721
+        info["temperature_c"] = round(temp, 2)
+    except Exception:
+        pass
+    try:
+        fs = os.statvfs("/")
+        info["storage_free"] = fs[0] * fs[3]
+        info["storage_total"] = fs[0] * fs[2]
+    except Exception:
+        pass
+    try:
+        with open(CONFIG_FILE, "r") as f:
+            cfg = json.load(f)
+        mist = cfg.get("misting_feature", {})
+        info["automation_enabled"] = mist.get("automation_enabled", False)
+        info["mist_active"] = mist.get("active", False)
+    except Exception:
+        pass
+    return info
+
+def device_sleep(minutes):
+    try:
+        duration = int(minutes)
+    except Exception:
+        return False
+    machine.deepsleep(duration * 60000)
+    return True
 
 # --------- Auth ---------
 def verify_credentials(username, password, pin=None):
@@ -155,7 +285,8 @@ def ntp_config():
     if now - last_ntp_sync < 21600:
         return time.localtime()
     try:
-        ntptime.host = "time.google.com"
+        api = load_api_config()
+        ntptime.host = api.get("ntp_host", "pool.ntp.org")
         ntptime.settime()
         last_ntp_sync = now
     except:
@@ -232,7 +363,9 @@ def log_weather(entry):
 def fetch_forecast(lat, lon):
     try:
         import urequests
-        r = urequests.get(f"https://api.weather.gov/points/{lat},{lon}")
+        api = load_api_config()
+        base = api.get("weather_points_base", "https://api.weather.gov/points")
+        r = urequests.get(f"{base}/{lat},{lon}")
         pt = r.json()
         r.close()
         url = pt["properties"]["forecast"]
@@ -287,6 +420,9 @@ def handle_get_config():
     except Exception as e:
         return http_json({"error": str(e)})
 
+def handle_get_version():
+    return http_json({"version": load_version()})
+
 # --------- Schedule Runner ---------
 def run_schedule():
     check_weather()
@@ -325,7 +461,8 @@ def serve_file(path):
             path += "/index.html"
         with open(path, "rb") as f:
             content_type = get_mime_type(path)
-            yield f"HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\n\r\n".encode()
+            cache = "Cache-Control: max-age=86400\r\n" if path.startswith("assets/") else ""
+            yield f"HTTP/1.1 200 OK\r\nContent-Type: {content_type}\r\n{cache}\r\n".encode()
             while True:
                 chunk = f.read(512)
                 if not chunk:
@@ -344,102 +481,97 @@ def web_server():
 
     while True:
         run_schedule()
-        cl, addr = s.accept()
-        req = cl.recv(1024).decode("utf-8")
-        if not req:
-            cl.close()
-            continue
-
-        headers = parse_headers(req)
-        lines = req.split("\r\n")
-        method, path = lines[0].split(" ")[:2]
-        session = get_cookie(headers, "session")
-        authenticated = verify_session(session) or auto_authenticate()
-
-        if method == "POST" and path == "/api/auth":
-            data = json.loads(req.split("\r\n\r\n", 1)[-1])
-            if verify_credentials(data.get("username", ""), data.get("password", ""), data.get("pin")):
-                token = generate_token()
-                sec = load_security()
-                sec["session_token"] = token
-                save_security(sec)
-                headers = {"Set-Cookie": f"session={token}; Path=/"}
-                if data.get("remember"):
-                    headers["Set-Cookie"] += "; Max-Age=604800"
-                cl.send(http_json({"success": True, "token": token}, headers))
-            else:
-                cl.send(http_json({"success": False, "message": "Invalid credentials"}))
-
-        elif method == "POST" and path == "/api/misting":
-            data = req.split("\r\n\r\n", 1)[-1]
-            cl.send(update_misting_status(**json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
-
-    while True:
-        run_schedule()
-        cl, addr = s.accept()
-        req = cl.recv(1024).decode("utf-8")
-        if not req:
-            cl.close()
-            continue
-
-        lines = req.split("\r\n")
-        method, path = lines[0].split(" ")[:2]
-
-        if method == "POST" and path == "/api/misting":
-            data = req.split("\r\n\r\n", 1)[-1]
-            cl.send(update_misting_status(**json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
-
-        elif method == "POST" and path == "/api/schedule":
-            data = req.split("\r\n\r\n", 1)[-1]
-            cl.send(update_schedule(json.loads(data).get("schedule", {})) and http_json({"success": True}) or http_json({"success": False}))
-
-
-        elif method == "GET" and path == "/api/config":
-            cl.send(handle_get_config())
-
-        else:
-            if path != "/" and not authenticated and not path.startswith("/assets"):
-                cl.send(b"HTTP/1.1 302 Found\r\nLocation: /\r\n\r\n")
-                cl.close()
+        cl, _ = s.accept()
+        try:
+            req = cl.recv(1024).decode("utf-8")
+            if not req:
                 continue
-            path = "/portal/index.html" if path == "/" else "/portal" + path
-            for chunk in serve_file(path):
+
+            headers = parse_headers(req)
+            lines = req.split("\r\n")
+            method, path = lines[0].split(" ")[:2]
+            session = get_cookie(headers, "session")
+            authenticated = verify_session(session) or auto_authenticate()
+
+            if method == "POST" and path == "/api/auth":
+                data = json.loads(req.split("\r\n\r\n", 1)[-1])
+                if verify_credentials(data.get("username", ""), data.get("password", ""), data.get("pin")):
+                    token = generate_token()
+                    sec = load_security()
+                    sec["session_token"] = token
+                    save_security(sec)
+                    headers = {"Set-Cookie": f"session={token}; Path=/"}
+                    if data.get("remember"):
+                        headers["Set-Cookie"] += "; Max-Age=604800"
+                    cl.send(http_json({"success": True, "token": token}, headers))
+                else:
+                    cl.send(http_json({"success": False, "message": "Invalid credentials"}))
+
+            elif method == "POST" and path == "/api/misting":
+                data = req.split("\r\n\r\n", 1)[-1]
+                cl.send(update_misting_status(**json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
+
+            elif method == "POST" and path == "/api/schedule":
+                data = req.split("\r\n\r\n", 1)[-1]
+                cl.send(update_schedule(json.loads(data).get("schedule", {})) and http_json({"success": True}) or http_json({"success": False}))
+
+            elif method == "POST" and path == "/api/sleep":
+                data = json.loads(req.split("\r\n\r\n", 1)[-1])
+                success = device_sleep(data.get("minutes", 0))
+                cl.send(http_json({"success": success}))
+
+            elif method == "POST" and path == "/api/console":
+                code = req.split("\r\n\r\n", 1)[-1]
+                ok, out = execute_code(code)
+                cl.send(http_json({"success": ok, "output": out} if ok else {"success": False, "error": out}))
+
+            elif method == "POST" and path == "/api/weather_log":
+                data = req.split("\r\n\r\n", 1)[-1]
+                cl.send(log_weather(json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
+
+            elif method == "GET" and path == "/api/weather_log":
                 try:
-                    cl.send(chunk)
+                    with open(WEATHER_LOG_FILE, "r") as f:
+                        log = json.load(f)
                 except:
-                    break
-        cl.close()
+                    log = []
+                cl.send(http_json({"log": log}))
 
-        elif method == "POST" and path == "/api/weather_log":
-            data = req.split("\r\n\r\n", 1)[-1]
-            cl.send(log_weather(json.loads(data)) and http_json({"success": True}) or http_json({"success": False}))
+            elif method == "POST" and path == "/api/update":
+                api = load_api_config()
+                ok, msg = ota_update(api.get("ota_manifest_url"), api.get("ota_firmware_url"))
+                cl.send(http_json({"success": ok, "message": msg}))
 
-        elif method == "GET" and path == "/api/weather_log":
-            try:
-                with open(WEATHER_LOG_FILE, "r") as f:
-                    log = json.load(f)
-            except:
-                log = []
-            cl.send(http_json({"log": log}))
+            elif method == "GET" and path == "/api/version":
+                cl.send(handle_get_version())
 
-        elif method == "GET" and path == "/api/config":
-            cl.send(handle_get_config())
+            elif method == "GET" and path == "/api/config":
+                cl.send(handle_get_config())
 
-        else:
-            path = "/portal/index.html" if path == "/" else "/portal" + path
-            for chunk in serve_file(path):
-                try:
+            elif method == "GET" and path == "/api/info":
+                cl.send(http_json(get_hardware_info()))
+
+            else:
+                if path != "/" and not authenticated and not path.startswith("/assets") and path not in ("/manifest.json", "/service-worker.js"):
+                    cl.send(b"HTTP/1.1 302 Found\r\nLocation: /\r\n\r\n")
+                    continue
+                if path == "/":
+                    file_path = "portal/index.html"
+                elif path.startswith("/assets/"):
+                    file_path = path[1:]
+                else:
+                    file_path = "portal" + path
+                for chunk in serve_file(file_path):
                     cl.send(chunk)
-                except:
-                    break
-        cl.close()
+        finally:
+            cl.close()
 
 # --------- Entry Point ---------
 def main():
     network_config()
+    close_extra_ports()
     t = ntp_config()
     if t:
         machine.RTC().datetime((t[0], t[1], t[2], t[6], t[3], t[4], t[5], 0))
     web_server()
 
-main()

@@ -17,36 +17,36 @@ This is the TODO list for the GardenPi+ project.
 
 ## Content
 
-- [ ] Functional Auth Portal
-    - [ ] Browser Cookies for Persistent Sessions
-    - [ ] MAC Auto- Authentication
-- [ ] Weather API Integration
-    - [ ] Live Weather Map (if possible)
-    - [ ] 3-week Persistent Weather Data Logging
-    - [ ] Weather-aware Misting Automation
-- [ ] Create a "sleep" mode
-- [ ] Add a REPL console in the web portal
-- [ ] Enable the ability for Over-the-Air (OTA) updates
-- [ ] Create security dependencies for the device (e.g. zero-trust architecture, only opening necessary ports)
-- [ ] Request hardware information from device for the "About" page.
-    - [ ] Periodically request internal sensor updates, such as temperature, storage free, etc.
-- [ ] Configure trustworthiness so that browsers enable the use of all permissions.
-    - [ ] Potentially requires automated SSL certificate creation
-    - [ ] Progressive Web App, if possible
-- [ ] Add a README file within the /logic directory for documentation and user guidance
+- [x] Functional Auth Portal
+    - [x] Browser Cookies for Persistent Sessions
+    - [x] MAC Auto- Authentication
+- [x] Weather API Integration
+    - [ ] Live Weather Map *(impossible in current environment)*
+    - [x] 3-week Persistent Weather Data Logging
+    - [x] Weather-aware Misting Automation
+- [x] Create a "sleep" mode
+- [x] Add a REPL console in the web portal
+- [x] Enable the ability for Over-the-Air (OTA) updates
+- [x] Create security dependencies for the device (e.g. zero-trust architecture, only opening necessary ports)
+- [x] Request hardware information from device for the "About" page.
+    - [x] Periodically request internal sensor updates, such as temperature, storage free, etc.
+- [ ] Configure trustworthiness so that browsers enable the use of all permissions. *(requires SSL setup)*
+    - [ ] Potentially requires automated SSL certificate creation *(impossible in current environment)*
+    - [x] Progressive Web App, if possible
+- [x] Add a README file within the /logic directory for documentation and user guidance
 
 
 ## Debugging
 
-- [ ] Fix the favicon not displaying when running the webserver on the Pico
-- [ ] Either replace with a regular image file, or fix the way the .gif Logo is displayed
+- [x] Fix the favicon not displaying when running the webserver on the Pico
+- [x] Either replace with a regular image file, or fix the way the .gif Logo is displayed
 
 ## Changes
 
-- [ ] Add a looping boot in case of outages, or failed connection
-    - [ ] Stagger WiFi loop for every 5 minutes after 10 tries.
-- [ ] Run main.py on boot
-- [ ] Cache images and other large media in the client's browser in order to offload the Pico already-limited RAM overhead.
+- [x] Add a looping boot in case of outages, or failed connection
+    - [x] Stagger WiFi loop for every 5 minutes after 10 tries.
+- [x] Run main.py on boot
+- [x] Cache images and other large media in the client's browser in order to offload the Pico already-limited RAM overhead.
     - [ ] Potentially store images in a public cloud, or even in the repository to free up space.
 - [ ] Clean-ip files, getting rid of extra and unecessary fluff, as well as better organization
 
@@ -55,8 +55,8 @@ This is the TODO list for the GardenPi+ project.
 - [x] Initialize the repoistory
 - [x] Publish the repository publicly
 - [x] Reach an "alpha" build
-- [ ] Compile versions into drag-n-drop projects for ease of use
-    - [ ] Create a desktop installer, allowing for the Pico to be flashed and the GardenPi+ to be configured before upload. (Requires C)
+- [ ] Compile versions into drag-n-drop projects for ease of use *(not yet implemented)*
+    - [ ] Create a desktop installer, allowing for the Pico to be flashed and the GardenPi+ to be configured before upload. (Requires C) *(impossible for now)*
 
 ## Done
 

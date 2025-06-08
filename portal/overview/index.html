@@ -4,9 +4,10 @@
 	<title>GardenPi Portal - Overview</title>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../styles.css">
-	<link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
-  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<script src="../simplelogic.js"></script>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="manifest" href="/manifest.json">
+        <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <script src="../simplelogic.js"></script>
 </head>
 <body>
 
@@ -14,7 +15,7 @@
   <div class="navGPiContainer">
     <div class="navLogo">
       <a href="/overview">
-        <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+        <img src="/assets/garden.gif" alt="GardenPi+" class="logoIcon">
       </a>
     </div>
     <div class="navGPi">
@@ -54,11 +55,42 @@
 <div class="dashboardContainer">
   <div class="dashboardStatusContainer">
     <h2 class="mainHeroHeader">Status</h2>
+    <ul class="statusList">
+      <li>Internal Temp: <span id="temp">--</span></li>
+      <li>RAM Usage: <span id="ram">--</span></li>
+      <li>Storage Free: <span id="storage">--</span></li>
+      <li>Automation: <span id="auto">--</span></li>
+      <li>Mist: <span id="mist">--</span></li>
+    </ul>
   </div>
   <div class="dashboardForecastContainer">
     <h2 class="mainHeroHeader">Upcoming Forecast</h2>
   </div>
 </div>
+
+<script>
+async function loadStatus(){
+  const res = await fetch('/api/info');
+  const data = await res.json();
+  if('temperature_c' in data){
+    document.getElementById('temp').textContent = data.temperature_c + ' C';
+  }
+  if('mem_total' in data && 'mem_free' in data){
+    const used = data.mem_total - data.mem_free;
+    document.getElementById('ram').textContent = used + '/' + data.mem_total;
+  }
+  if('storage_free' in data && 'storage_total' in data){
+    document.getElementById('storage').textContent = data.storage_free + '/' + data.storage_total;
+  }
+  if('automation_enabled' in data){
+    document.getElementById('auto').textContent = data.automation_enabled ? 'On' : 'Off';
+  }
+  if('mist_active' in data){
+    document.getElementById('mist').textContent = data.mist_active ? 'Running' : 'Idle';
+  }
+}
+document.addEventListener('DOMContentLoaded', loadStatus);
+</script>
 
 </body>
 </html>

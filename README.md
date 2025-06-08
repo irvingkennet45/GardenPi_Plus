@@ -93,6 +93,11 @@ These are some of the components that I used when building my system. The majori
 
 With the ability to fully modify the portal's styling directly from the source, you can customize your experience as much as you'd like!
 
+### API Configuration
+
+External services used by the software are defined in `logging/apis.json`.
+Adjust these URLs if you prefer different providers for NTP or weather data.
+
 ## Expansion
 
 Add your own modules, such as temperature sensors, humidity sensors, soil monitors, and more, and connect them through GPIO pins for logging and oversight over your garden!

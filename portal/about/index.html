@@ -5,8 +5,9 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
-	<script src="../simplelogic.js"></script>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="manifest" href="/manifest.json">
+        <script src="../simplelogic.js"></script>
 </head>
 <body>
 
@@ -14,7 +15,7 @@
   <div class="navGPiContainer">
     <div class="navLogo">
       <a href="/overview">
-        <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+        <img src="/assets/garden.gif" alt="GardenPi+" class="logoIcon">
       </a>
     </div>
     <div class="navGPi">
@@ -53,7 +54,8 @@
 
 <h2 class="mainHeroHeader">Software Information -</h2>
 <p class="aboutParagraph">
-<strong>Version:</strong> GardenPi+ v1.0 (Public Release 1)<br>
+<strong>Version:</strong> <span id="version">--</span>
+<button id="updateBtn">Check for updates</button><br>
 <strong>Author & Developer:</strong> 
 	<a href="https://github.com/irvingkennet45" rel="author" target="_blank" class="aboutLinks">
 		Kenneth Irving (irvingkennet45)
@@ -73,19 +75,50 @@
 
 <h2 class="mainHeroHeader">Device Information -</h2>
 <p class="aboutParagraph">
-<strong>Architecture:</strong> <em>unknown</em><br>
-<strong>Processor:</strong> <em>unknown</em><br>
-<strong>RAM:</strong> <em>unknown</em><br>
-<strong>OS:</strong> N/A<br>
-<strong>Model:</strong> <em>unknown</em><br>
-<strong>Manufacturer:</strong> <em>None</em><br>
-<strong>Serial:</strong> <em>Cannot fetch</em><br><br>
+<strong>Architecture:</strong> <em id="arch">unknown</em><br>
+<strong>Processor:</strong> <em id="proc">unknown</em><br>
+<strong>RAM:</strong> <em id="ram">unknown</em><br>
+<strong>OS:</strong> <em id="os">N/A</em><br>
+<strong>Model:</strong> <em id="model">unknown</em><br>
+<strong>Manufacturer:</strong> <em id="manu">None</em><br>
+<strong>Serial:</strong> <em id="serial">Cannot fetch</em><br><br>
 
-<strong>Uptime:</strong> <em>unknown</em><br>
-<strong>Core Temperature:</strong> <em>unknown</em><br>
-<strong>Last Runtime:</strong> <em>unknown</em>
+<strong>Uptime:</strong> <em id="uptime">unknown</em><br>
+<strong>Core Temperature:</strong> <em id="coreTemp">unknown</em><br>
 </p> <!--Not in use yet. Will be able to grab hardware information and serve it accordingly.-->
 
+<script>
+async function loadInfo() {
+  const res = await fetch('/api/info');
+  const data = await res.json();
+  document.getElementById('arch').textContent = data.architecture || 'unknown';
+  document.getElementById('proc').textContent = data.processor || 'unknown';
+  document.getElementById('ram').textContent = data.ram || 'unknown';
+  if (data.os) document.getElementById('os').textContent = data.os;
+  document.getElementById('model').textContent = data.model || 'unknown';
+  document.getElementById('manu').textContent = data.manufacturer || 'None';
+  if (data.serial) document.getElementById('serial').textContent = data.serial;
+  if (data.uptime) document.getElementById('uptime').textContent = data.uptime;
+  if ('temperature_c' in data) {
+    document.getElementById('coreTemp').textContent = data.temperature_c + ' C';
+  }
+  if (data.last_runtime)
+    document.getElementById('lastRun').textContent = data.last_runtime;
+}
+async function loadVersion(){
+  const res = await fetch('/api/version');
+  const data = await res.json();
+  document.getElementById('version').textContent = data.version || 'unknown';
+}
+
+document.getElementById('updateBtn').addEventListener('click', async ()=>{
+  const res = await fetch('/api/update', {method: 'POST'});
+  const data = await res.json();
+  alert(data.message);
+});
+
+document.addEventListener('DOMContentLoaded', () => { loadInfo(); loadVersion(); });
+</script>
 
 </body>
 </html>

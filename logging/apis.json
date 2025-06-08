@@ -1,0 +1,6 @@
+{
+    "ntp_host": "time.google.com",
+    "weather_points_base": "https://api.weather.gov/points",
+    "ota_manifest_url": "http://your-server.com/gardenpi/manifest.json",
+    "ota_firmware_url": "http://your-server.com/gardenpi/firmware.bin"
+}
