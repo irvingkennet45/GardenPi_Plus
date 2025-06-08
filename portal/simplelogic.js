@@ -117,19 +117,21 @@ document.addEventListener("DOMContentLoaded", () => {
       checkbox.addEventListener("change", () => toggleDay(day));
     }
   });
+
+  const form = document.getElementById('scheduleForm');
+  if (form) form.addEventListener('submit', saveSchedule);
+
+  const mistToggle = document.getElementById('mistToggle');
+  const autoMistToggle = document.getElementById('autoMistToggle');
+  if (mistToggle && autoMistToggle) {
+    mistToggle.addEventListener('change', sendMisting);
+    autoMistToggle.addEventListener('change', sendMisting);
+  }
+
+  loadConfig();
 });
 
-// Disable Schedule Form Elements w/o Check
-function toggleDay(day) {
-  const checkbox = document.getElementById(`${day}-check`);
-  const timeContainer = document.getElementById(`${day}-times`);
-  const selects = timeContainer.querySelectorAll('select');
 
-  selects.forEach(select => {
-    select.disabled = !checkbox.checked;
-    select.style.opacity = checkbox.checked ? "1" : "0.5";
-  });
-}
 
 // Misting (Automated & Manual) Alert
 function alertBox() {
@@ -144,6 +146,107 @@ function alertBox() {
     alert("Manual misting is currently active, and automation is also enabled. Be sure to turn off manual misting when no longer needed.");
   } else {
     alert("Both misting options are currently disabled. No misting will occur unless enabled.");
+  }
+}
+
+async function sendMisting() {
+  const enabled = document.getElementById('autoMistToggle').checked;
+  const active = document.getElementById('mistToggle').checked;
+  try {
+    await fetch('/api/misting', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({enabled, active})
+    });
+  } catch (e) {
+    console.error('Failed to update misting', e);
+  }
+}
+
+function minsToTime(mins) {
+  const h24 = Math.floor(mins / 60);
+  const m = mins % 60;
+  const ampm = h24 >= 12 ? 'PM' : 'AM';
+  let h12 = h24 % 12;
+  if (h12 === 0) h12 = 12;
+  return {time: `${h12}:${m.toString().padStart(2,'0')}`, ampm};
+}
+
+async function loadConfig() {
+  try {
+    const resp = await fetch('/api/config');
+    const cfg = await resp.json();
+    const days = ['sun','mon','tue','wed','thu','fri','sat'];
+    if ('automation_enabled' in cfg) {
+      const auto = document.getElementById('autoMistToggle');
+      if (auto) auto.checked = cfg.automation_enabled;
+    }
+    if ('active' in cfg) {
+      const mist = document.getElementById('mistToggle');
+      if (mist) mist.checked = cfg.active;
+    }
+    if (cfg.schedule) {
+      days.forEach(day => {
+        const times = cfg.schedule[day] || [];
+        const checkbox = document.getElementById(`${day}-check`);
+        const slots = document.querySelectorAll(`#${day}-times .timeSlot`);
+        const valid = times.filter(t => t > 0);
+        if (checkbox) checkbox.checked = valid.length > 0;
+        valid.forEach((val, idx) => {
+          if (slots[idx]) {
+            const {time, ampm} = minsToTime(val);
+            slots[idx].querySelector('.timeDropdown').value = time;
+            slots[idx].querySelector('.ampmDropdown').value = ampm;
+          }
+        });
+        for (let i = valid.length; i < slots.length; i++) {
+          slots[i].querySelector('.timeDropdown').value = 'None';
+          slots[i].querySelector('.ampmDropdown').value = 'AM';
+        }
+        toggleDay(day);
+      });
+    }
+  } catch (e) {
+    console.error('Failed to load config', e);
+  }
+}
+
+function gatherSchedule() {
+  const out = {};
+  const days = ['sun','mon','tue','wed','thu','fri','sat'];
+  days.forEach(day => {
+    const checkbox = document.getElementById(`${day}-check`);
+    if (!checkbox || !checkbox.checked) return;
+    const slots = document.querySelectorAll(`#${day}-times .timeSlot`);
+    const times = [];
+    slots.forEach(slot => {
+      const timeVal = slot.querySelector('.timeDropdown').value;
+      const ampm = slot.querySelector('.ampmDropdown').value;
+      if (timeVal !== 'None') {
+        let [h, m] = timeVal.split(':').map(n => parseInt(n,10));
+        if (ampm === 'PM' && h !== 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        times.push(`${h}:${m.toString().padStart(2,'0')}`);
+      }
+    });
+    if (times.length) out[day] = times;
+  });
+  return out;
+}
+
+async function saveSchedule(event) {
+  event.preventDefault();
+  const schedule = gatherSchedule();
+  try {
+    await fetch('/api/schedule', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({schedule})
+    });
+    alert('Schedule saved.');
+  } catch (e) {
+    console.error('Failed to save schedule', e);
+    alert('Failed to save schedule');
   }
 }
 

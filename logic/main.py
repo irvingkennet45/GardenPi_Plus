@@ -426,7 +426,7 @@ def handle_get_version():
 # --------- Schedule Runner ---------
 def run_schedule():
     check_weather()
-    t = time.localtime(time.time() - 14400)  # Adjust for UTC-4
+    t = time.localtime()
     current_min = t[3] * 60 + t[4]
     today = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"][t[6]]
 
@@ -478,10 +478,14 @@ def web_server():
     s.bind(addr)
     s.listen(1)
     print("[WEB] Server running at http://" + network.WLAN(network.STA_IF).ifconfig()[0])
+    s.settimeout(1)
 
     while True:
         run_schedule()
-        cl, _ = s.accept()
+        try:
+            cl, _ = s.accept()
+        except OSError:
+            continue
         try:
             req = cl.recv(1024).decode("utf-8")
             if not req:
