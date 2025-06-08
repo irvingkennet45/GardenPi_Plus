@@ -4,7 +4,7 @@
 	<title>GardenPi Portal - Overview</title>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../styles.css">
-        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/irvingkennet45/GardenPi_Plus/refs/heads/main/assets/favicon.ico">
         <link rel="manifest" href="/manifest.json">
         <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
         <script src="../simplelogic.js"></script>
@@ -15,7 +15,7 @@
   <div class="navGPiContainer">
     <div class="navLogo">
       <a href="/overview">
-        <img src="/assets/garden.gif" alt="GardenPi+" class="logoIcon">
+        <img src="https://github.com/irvingkennet45/GardenPi_Plus/blob/main/assets/garden.gif?raw=true" alt="GardenPi+" class="logoIcon">
       </a>
     </div>
     <div class="navGPi">
@@ -89,7 +89,24 @@ async function loadStatus(){
     document.getElementById('mist').textContent = data.mist_active ? 'Running' : 'Idle';
   }
 }
-document.addEventListener('DOMContentLoaded', loadStatus);
+async function loadForecast(){
+  try{
+    const res = await fetch('/api/weather_log');
+    const data = await res.json();
+    const entry = (data.log || []).slice(-1)[0];
+    if(!entry) return;
+    const container = document.querySelector('.dashboardForecastContainer');
+    entry.periods.forEach(p=>{
+      const div = document.createElement('div');
+      div.className = 'forecastDay';
+      div.innerHTML = `<strong>${p.name}</strong><br>${p.temperature}°${p.temperatureUnit}<br>${p.shortForecast}`;
+      container.appendChild(div);
+    });
+  }catch(e){
+    console.error('forecast load failed',e);
+  }
+}
+document.addEventListener('DOMContentLoaded', ()=>{loadStatus(); loadForecast();});
 </script>
 
 </body>

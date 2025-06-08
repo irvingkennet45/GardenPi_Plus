@@ -176,6 +176,10 @@ def get_hardware_info():
             info = json.load(f)
     except:
         info = {}
+    try:
+        info["serial"] = machine.unique_id().hex()
+    except Exception:
+        pass
     alloc = gc.mem_alloc()
     free = gc.mem_free()
     info["mem_free"] = free
@@ -556,7 +560,8 @@ def web_server():
                 cl.send(http_json(get_hardware_info()))
 
             else:
-                if path != "/" and not authenticated and not path.startswith("/assets") and path not in ("/manifest.json", "/service-worker.js"):
+                if path != "/" and not authenticated and not path.startswith("/assets") \
+                   and path not in ("/manifest.json", "/service-worker.js", "/styles.css", "/simplelogic.js", "/weather_API.js"):
                     cl.send(b"HTTP/1.1 302 Found\r\nLocation: /\r\n\r\n")
                     continue
                 if path == "/":

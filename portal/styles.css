@@ -300,7 +300,7 @@ body {
   display: grid;
   grid-template-columns: 120px 40px 1fr;
   align-items: center;
-  column-gap: 40px;
+  column-gap: 20px;
   row-gap: 10px;
   margin-bottom: 1.5rem;
 }
@@ -314,9 +314,8 @@ body {
 }
 
 .scheduleRow input[type="checkbox"] {
-  transform: scale(1.5);
+  transform: scale(1.2);
   margin: auto;
-  margin-left: 5.5rem;
   display: block;
   align-self: center;
 }
@@ -324,9 +323,9 @@ body {
 .timeSelectors {
   display: flex;
   flex-wrap: wrap;
-  gap: 15rem;
+  gap: 1rem;
   flex-grow: 1;
-  margin-left: 8.5rem;
+  margin-left: 0;
 }
 
 .timeSlot {
