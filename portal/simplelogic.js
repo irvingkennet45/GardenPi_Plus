@@ -33,6 +33,9 @@ window.onload = () => {
   updateClock();
   setupDarkMode();
   checkSession();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
 }
 
 // Dark Mode Toggle

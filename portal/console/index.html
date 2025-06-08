@@ -3,10 +3,11 @@
 <head>
 	<title>GardenPi Portal - Console</title>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" href="../styles.css">
-	<link rel="icon" type="image/x-icon" href="/../../assets/favicon.ico">
+        <link rel="stylesheet" href="../styles.css">
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+        <link rel="manifest" href="/manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
-	<script src="../simplelogic.js"></script>
+        <script src="../simplelogic.js"></script>
 </head>
 <body>
 
@@ -14,7 +15,7 @@
   <div class="navGPiContainer">
     <div class="navLogo">
       <a href="/overview">
-        <img src="/../../assets/garden.gif" alt="GardenPi+" class="logoIcon">
+        <img src="/assets/garden.gif" alt="GardenPi+" class="logoIcon">
       </a>
     </div>
     <div class="navGPi">
@@ -50,8 +51,21 @@
 </nav>
 
 <h1 class="mainHeader">Console</h1>
+<div class="console">
+  <textarea id="consoleInput" rows="8" cols="60"></textarea><br>
+  <button onclick="runConsole()">Run</button>
+  <pre id="consoleOutput"></pre>
+</div>
+
+<script>
+async function runConsole() {
+  const code = document.getElementById('consoleInput').value;
+  const res = await fetch('/api/console', {method: 'POST', body: code});
+  const data = await res.json();
+document.getElementById('consoleOutput').textContent =
+    data.success ? data.output : 'Error: ' + data.error;
+}
+</script>
 
 </body>
 </html>
-
-<!--Not in use yet. Will be able to REPL using the online portal eventually.-->
